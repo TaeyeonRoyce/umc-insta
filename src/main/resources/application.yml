@@ -1,0 +1,18 @@
+server:
+  port: 9000  # 9000번 포트로 실행
+
+spring:
+  application:
+    name: demo
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://umc-database.czvmpbwtbm7z.ap-northeast-2.rds.amazonaws.com:3306/umcdb?serverTimezone=UTC&characterEncoding=UTF-8
+    username: umc_db_student
+    password: dbpassword
+
+
+logging:
+  level:
+    com.umc_sju.umc_practice: debug
+    org.hibernate.SQL: debug # ?? log? ??
+    org.hibernate.type: debug
