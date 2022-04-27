@@ -4,6 +4,8 @@ import static com.example.demo.config.BaseResponseStatus.*;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.example.demo.config.BaseException;
 import com.example.demo.config.secret.Secret;
 import com.example.demo.src.user.UserService;
@@ -17,10 +19,9 @@ import com.example.demo.src.user.jpa.model.User;
 import com.example.demo.utils.AES128;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @AllArgsConstructor
-@RequiredArgsConstructor
+@Service
 public class UserServiceJPA implements UserService {
 
 	private final UserRepository userRepository;
@@ -31,6 +32,7 @@ public class UserServiceJPA implements UserService {
 		if (checkEmail(postUserReq.getEmail()) == 1) {
 			throw new BaseException(POST_USERS_EXISTS_EMAIL);
 		}
+
 		String pwd;
 		try {
 			// 암호화: postUserReq에서 제공받은 비밀번호를 보안을 위해 암호화시켜 DB에 저장합니다.
@@ -40,8 +42,10 @@ public class UserServiceJPA implements UserService {
 		} catch (Exception ignored) { // 암호화가 실패하였을 경우 에러 발생
 			throw new BaseException(PASSWORD_ENCRYPTION_ERROR);
 		}
-		try {
-			User savedUser = userRepository.save(postUserReq.toEntity());
+
+		// try {
+			User user = postUserReq.toEntity();
+			User savedUser = userRepository.save(user);
 			PostUserRes postUserRes = new PostUserRes(savedUser.getUserIdx());
 			return postUserRes;
 
@@ -50,9 +54,9 @@ public class UserServiceJPA implements UserService {
 			//            String jwt = jwtService.createJwt(userIdx);
 			//            return new PostUserRes(jwt,userIdx);
 			//  *********************************************************************
-		} catch (Exception exception) { // DB에 이상이 있는 경우 에러 메시지를 보냅니다.
-			throw new BaseException(DATABASE_ERROR);
-		}
+		// } catch (Exception exception) { // DB에 이상이 있는 경우 에러 메시지를 보냅니다.
+		// 	throw new BaseException(DATABASE_ERROR);
+		// }
 	}
 
 	@Override

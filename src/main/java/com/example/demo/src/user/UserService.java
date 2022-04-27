@@ -2,12 +2,14 @@ package com.example.demo.src.user;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.example.demo.config.BaseException;
-import com.example.demo.src.user.jpa.model.*;
+import com.example.demo.src.user.jpa.model.GetUserRes;
+import com.example.demo.src.user.jpa.model.PatchUserReq;
+import com.example.demo.src.user.jpa.model.PostLoginReq;
+import com.example.demo.src.user.jpa.model.PostLoginRes;
+import com.example.demo.src.user.jpa.model.PostUserReq;
+import com.example.demo.src.user.jpa.model.PostUserRes;
 
-@Service
 public interface UserService {
 
 	// 회원가입(POST)

@@ -1,86 +1,63 @@
 package com.example.demo.src.user.jpa.model;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
+import com.example.demo.utils.BaseTimeEntity;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "User", schema = "umcdb", catalog = "")
-public class User {
+public class User extends BaseTimeEntity {
 
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	@Column(name = "userIdx")
-	private int userIdx;
+	private Long userIdx;
 
-	@Basic(optional = false)
-	@Column(name = "name")
+	@Column(name = "name", length = 10, nullable = false)
 	private String name;
 
-	@Basic(optional = false)
-	@Column(name = "nickName")
+	@Column(name = "nickName", length = 30, nullable = false)
 	private String nickName;
 
-	@Basic(optional = false)
-	@Column(name = "email")
+	@Column(name = "email", nullable = false)
 	private String email;
 
-	@Basic(optional = false)
-	@Column(name = "pwd")
+	@Column(name = "pwd", nullable = false)
 	private String pwd;
 
-	@Basic
 	@Column(name = "profileImgUrl")
 	private String profileImgUrl;
 
-	@Basic
 	@Column(name = "gender")
 	private String gender;
 
-	@Basic
 	@Column(name = "birth")
 	private Date birth;
 
-	@Basic
 	@Column(name = "website")
 	private String website;
 
-	@Basic
 	@Column(name = "introduction")
 	private String introduction;
 
-	@Basic
 	@Column(name = "status")
 	private String status;
 
-	@Basic
-	@Column(name = "createdAt")
-	private Timestamp createdAt;
-
-	@Basic
-	@Column(name = "updatedAt")
-	private Timestamp updatedAt;
-
 	@Builder
-	public User(int userIdx, String name, String nickName, String email, String pwd, String profileImgUrl,
-		String gender, Date birth, String website, String introduction, String status, Timestamp createdAt,
-		Timestamp updatedAt) {
+	public User(Long userIdx, String name, String nickName, String email, String pwd, String profileImgUrl,
+		String gender, Date birth, String website, String introduction, String status) {
 		this.userIdx = userIdx;
 		this.name = name;
 		this.nickName = nickName;
@@ -92,8 +69,6 @@ public class User {
 		this.website = website;
 		this.introduction = introduction;
 		this.status = status;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
 	}
 }
 

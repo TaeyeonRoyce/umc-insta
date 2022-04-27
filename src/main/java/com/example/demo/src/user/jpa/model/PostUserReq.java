@@ -12,6 +12,7 @@ public class PostUserReq {
 	private String email;
 	private String password;
 	private String nickname;
+	private String name;
 
 	public void saveSecuredPW(String pwd) {
 		this.password = pwd;
@@ -22,6 +23,7 @@ public class PostUserReq {
 			.email(this.email)
 			.pwd(this.password)
 			.nickName(this.nickname)
+			.name(this.name)
 			.build();
 	}
 }

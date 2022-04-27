@@ -174,7 +174,7 @@ public class UserController {
      */
     @ResponseBody
     @PatchMapping("/{userIdx}")
-    public BaseResponse<String> modifyUserName(@PathVariable("userIdx") int userIdx, @RequestBody User user) {
+    public BaseResponse<String> modifyUserName(@PathVariable("userIdx") Long userIdx, @RequestBody User user) {
         try {
 /**
   *********** 해당 부분은 7주차 - JWT 수업 후 주석해체 해주세요!  ****************
