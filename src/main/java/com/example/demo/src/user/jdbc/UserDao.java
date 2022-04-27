@@ -1,6 +1,11 @@
-package com.example.demo.src.user;
+package com.example.demo.src.user.jdbc;
 
 
+import com.example.demo.src.user.jdbc.model.GetUserRes;
+import com.example.demo.src.user.jdbc.model.PatchUserReq;
+import com.example.demo.src.user.jdbc.model.PostLoginReq;
+import com.example.demo.src.user.jdbc.model.PostUserReq;
+import com.example.demo.src.user.jdbc.model.User;
 import com.example.demo.src.user.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

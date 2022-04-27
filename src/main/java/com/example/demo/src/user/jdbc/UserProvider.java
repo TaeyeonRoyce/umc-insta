@@ -1,8 +1,11 @@
-package com.example.demo.src.user;
+package com.example.demo.src.user.jdbc;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.secret.Secret;
-import com.example.demo.src.user.model.*;
+import com.example.demo.src.user.jdbc.model.GetUserRes;
+import com.example.demo.src.user.jdbc.model.PostLoginReq;
+import com.example.demo.src.user.jdbc.model.PostLoginRes;
+import com.example.demo.src.user.jdbc.model.User;
 import com.example.demo.utils.AES128;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
