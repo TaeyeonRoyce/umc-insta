@@ -5,12 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.config.BaseException;
-import com.example.demo.src.user.jdbc.model.GetUserRes;
-import com.example.demo.src.user.jdbc.model.PatchUserReq;
-import com.example.demo.src.user.jdbc.model.PostLoginReq;
-import com.example.demo.src.user.jdbc.model.PostLoginRes;
-import com.example.demo.src.user.jdbc.model.PostUserReq;
-import com.example.demo.src.user.jdbc.model.PostUserRes;
+import com.example.demo.src.user.jpa.model.*;
 
 @Service
 public interface UserService {

@@ -21,13 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.user.jdbc.UserProvider;
-import com.example.demo.src.user.jdbc.model.GetUserRes;
-import com.example.demo.src.user.jdbc.model.PatchUserReq;
-import com.example.demo.src.user.jdbc.model.PostLoginReq;
-import com.example.demo.src.user.jdbc.model.PostLoginRes;
-import com.example.demo.src.user.jdbc.model.PostUserReq;
-import com.example.demo.src.user.jdbc.model.PostUserRes;
-import com.example.demo.src.user.jdbc.model.User;
+import com.example.demo.src.user.jpa.model.*;
 import com.example.demo.utils.JwtService;
 
 @RestController // Rest API 또는 WebAPI를 개발하기 위한 어노테이션. @Controller + @ResponseBody 를 합친것.
@@ -93,6 +87,8 @@ public class UserController {
         }
     }
 
+
+    // TODO : 로그인 API
     /**
      * 로그인 API
      * [POST] /users/logIn
@@ -100,17 +96,19 @@ public class UserController {
     @ResponseBody
     @PostMapping("/log-in")
     public BaseResponse<PostLoginRes> logIn(@RequestBody PostLoginReq postLoginReq) {
-        try {
-            // TODO: 로그인 값들에 대한 형식적인 validatin 처리해주셔야합니다!
-            // TODO: 유저의 status ex) 비활성화된 유저, 탈퇴한 유저 등을 관리해주고 있다면 해당 부분에 대한 validation 처리도 해주셔야합니다.
-            PostLoginRes postLoginRes = userProvider.logIn(postLoginReq);
-            return new BaseResponse<>(postLoginRes);
-        } catch (BaseException exception) {
-            return new BaseResponse<>(exception.getStatus());
-        }
+        // try {
+        //     // TODO: 로그인 값들에 대한 형식적인 validatin 처리해주셔야합니다!
+        //     // TODO: 유저의 status ex) 비활성화된 유저, 탈퇴한 유저 등을 관리해주고 있다면 해당 부분에 대한 validation 처리도 해주셔야합니다.
+        //     PostLoginRes postLoginRes = userProvider.logIn(postLoginReq);
+        //     return new BaseResponse<>(postLoginRes);
+        // } catch (BaseException exception) {
+        //     return new BaseResponse<>(exception.getStatus());
+        // }
+        return null;
     }
 
 
+    // TODO : 모든 회원 조회 API
     /**
      * 모든 회원들의  조회 API
      * [GET] /users
@@ -129,23 +127,25 @@ public class UserController {
         //  @RequestParam은, 1개의 HTTP Request 파라미터를 받을 수 있는 어노테이션(?뒤의 값). default로 RequestParam은 반드시 값이 존재해야 하도록 설정되어 있지만, (전송 안되면 400 Error 유발)
         //  지금 예시와 같이 required 설정으로 필수 값에서 제외 시킬 수 있음
         //  defaultValue를 통해, 기본값(파라미터가 없는 경우, 해당 파라미터의 기본값 설정)을 지정할 수 있음
-        try {
-            if (nickname == null) { // query string인 nickname이 없을 경우, 그냥 전체 유저정보를 불러온다.
-                List<GetUserRes> getUsersRes = userProvider.getUsers();
-                return new BaseResponse<>(getUsersRes);
-            }
-            // query string인 nickname이 있을 경우, 조건을 만족하는 유저정보들을 불러온다.
-            List<GetUserRes> getUsersRes = userProvider.getUsersByNickname(nickname);
-            return new BaseResponse<>(getUsersRes);
-        } catch (BaseException exception) {
-            return new BaseResponse<>((exception.getStatus()));
-        }
+        // try {
+        //     if (nickname == null) { // query string인 nickname이 없을 경우, 그냥 전체 유저정보를 불러온다.
+        //         List<GetUserRes> getUsersRes = userProvider.getUsers();
+        //         return new BaseResponse<>(getUsersRes);
+        //     }
+        //     // query string인 nickname이 있을 경우, 조건을 만족하는 유저정보들을 불러온다.
+        //     List<GetUserRes> getUsersRes = userProvider.getUsersByNickname(nickname);
+        //     return new BaseResponse<>(getUsersRes);
+        // } catch (BaseException exception) {
+        //     return new BaseResponse<>((exception.getStatus()));
+        // }
+
+        return null;
     }
-    /**
 
 
 
 
+    // TODO : 회원 1명 조회 API
     /**
      * 회원 1명 조회 API
      * [GET] /users/:userIdx
@@ -158,13 +158,14 @@ public class UserController {
         //  null값 or 공백값이 들어가는 경우는 적용하지 말 것
         //  .(dot)이 포함된 경우, .을 포함한 그 뒤가 잘려서 들어감
         // Get Users
-        try {
-            GetUserRes getUserRes = userProvider.getUser(userIdx);
-            return new BaseResponse<>(getUserRes);
-        } catch (BaseException exception) {
-            return new BaseResponse<>((exception.getStatus()));
-        }
+        // try {
+        //     GetUserRes getUserRes = userProvider.getUser(userIdx);
+        //     return new BaseResponse<>(getUserRes);
+        // } catch (BaseException exception) {
+        //     return new BaseResponse<>((exception.getStatus()));
+        // }
 
+        return null;
     }
 
     /**
@@ -186,7 +187,7 @@ public class UserController {
             //같다면 유저네임 변경
   **************************************************************************
  */
-            PatchUserReq patchUserReq = new PatchUserReq(userIdx, user.getNickname());
+            PatchUserReq patchUserReq = new PatchUserReq(userIdx, user.getName());
             userService.modifyUserName(patchUserReq);
 
             String result = "회원정보가 수정되었습니다.";

@@ -12,10 +12,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 @Entity
 @Table(name = "User", schema = "umcdb", catalog = "")
 public class User {
@@ -72,4 +76,25 @@ public class User {
 	@Basic
 	@Column(name = "updatedAt")
 	private Timestamp updatedAt;
+
+	@Builder
+	public User(int userIdx, String name, String nickName, String email, String pwd, String profileImgUrl,
+		String gender, Date birth, String website, String introduction, String status, Timestamp createdAt,
+		Timestamp updatedAt) {
+		this.userIdx = userIdx;
+		this.name = name;
+		this.nickName = nickName;
+		this.email = email;
+		this.pwd = pwd;
+		this.profileImgUrl = profileImgUrl;
+		this.gender = gender;
+		this.birth = birth;
+		this.website = website;
+		this.introduction = introduction;
+		this.status = status;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
 }
+
+
