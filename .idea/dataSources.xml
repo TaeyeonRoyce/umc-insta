@@ -7,5 +7,12 @@
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://forclass.c8ydsrovkrwj.ap-northeast-2.rds.amazonaws.com:3306/test</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="JDBC-Student" uuid="b2002762-a5b2-459e-ac1d-5609601b7481">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://umc-database.czvmpbwtbm7z.ap-northeast-2.rds.amazonaws.com:3306/umcdb</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

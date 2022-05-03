@@ -1,5 +1,6 @@
 package com.example.demo.src.user.model;
 
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,4 +23,9 @@ public class GetUserRes {
     private String nickname;
     private String email;
     private String password;
+    private Date birth;
+    private String gender;
+    private String introduction;
+    private String profile_img_url;
+    private String website;
 }
