@@ -87,6 +87,9 @@ public class UserProvider {
     public List<GetUserRes> getUsersByNickname(String nickname) throws BaseException {
         try {
             List<GetUserRes> getUsersRes = userDao.getUsersByNickname(nickname);
+            if (getUsersRes.size() == 0) {
+                throw new BaseException(GET_USER_INVALID_NICKNAME);
+            }
             return getUsersRes;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
@@ -99,6 +102,20 @@ public class UserProvider {
         try {
             GetUserRes getUserRes = userDao.getUser(userIdx);
             return getUserRes;
+        } catch (Exception exception) {
+            System.out.println(exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    // Email로 조회
+    public List<GetUserRes> getUserByEmail(String email) throws BaseException {
+        try {
+            List<GetUserRes> getUsersRes = userDao.getUserByEmail(email);
+            if (getUsersRes.size() == 0) {
+                throw new BaseException(GET_USER_INVALID_EMAIL);
+            }
+            return getUsersRes;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

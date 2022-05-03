@@ -12,6 +12,19 @@ public class ValidationRegex {
         return matcher.find();
     }
 
+    public static boolean isRegexURL(String target) {
+        String regex = "^(?:https?:\\/\\/)?(?:www\\.)?[a-zA-Z0-9./]+$";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(target);
+        return matcher.find();
+    }
+
+    public static boolean isRegexDate(String target) {
+        String regex = "(19|20)\\d{2}\\-((11|12)|(0?(\\d)))\\-(30|31|((0|1|2)?\\d))";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(target);
+        return matcher.find();
+    }
     // 날짜 형식, 전화 번호 형식 등 여러 Regex 인터넷에 검색하면 나옴.
 }
 

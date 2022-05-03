@@ -29,8 +29,17 @@ public enum BaseResponseStatus {
     POST_USERS_EMPTY_EMAIL(false, 2015, "이메일을 입력해주세요."),
     POST_USERS_INVALID_EMAIL(false, 2016, "이메일 형식을 확인해주세요."),
     POST_USERS_EXISTS_EMAIL(false,2017,"중복된 이메일입니다."),
+    POST_PASSWORD_EMPTY(false, 2018, "사용자 암호를 입력해주세요."),
+    POST_NAME_EMPTY(false, 2019, "이름을 입력해주세요."),
+    POST_NICKNAME_EMPTY(false, 2020, "닉네임을 입력해주세요."),
 
+    // [PATCH] /{userIdx}/detail
+    PATCH_DETAIL_INVALID_URL(false,2100, "URL형식을 확인해주세요."),
+    PATCH_DETAIL_INVALID_BIRTH_DATE(false,2101, "생년월일 형식을 확인해주세요."),
 
+    // [GET] /{userIdx}
+    GET_USER_INVALID_NICKNAME(false, 2200, "해당 닉네임의 유저가 존재하지 않습니다."),
+    GET_USER_INVALID_EMAIL(false, 2201, "해당 이메일의 유저가 존재하지 않습니다."),
 
     /**
      * 3000 : Response 오류
