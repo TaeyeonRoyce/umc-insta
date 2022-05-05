@@ -97,7 +97,16 @@ public class UserController {
 		try {
 			// TODO: 로그인 값들에 대한 형식적인 validatin 처리해주셔야합니다!
 			// TODO: 유저의 status ex) 비활성화된 유저, 탈퇴한 유저 등을 관리해주고 있다면 해당 부분에 대한 validation 처리도 해주셔야합니다.
+
+			if (postLoginReq.getEmail() == null || postLoginReq.getPassword() == null) {
+				return new BaseResponse<>(POST_LOGIN_EMPTY);
+			}
+
+			if (!isRegexEmail(postLoginReq.getEmail())) {
+				return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
+			}
 			PostLoginRes postLoginRes = userProvider.logIn(postLoginReq);
+
 			return new BaseResponse<>(postLoginRes);
 		} catch (BaseException exception) {
 			return new BaseResponse<>(exception.getStatus());
@@ -119,8 +128,8 @@ public class UserController {
 	@GetMapping("") // (GET) 127.0.0.1:9000/app/users
 	// GET 방식의 요청을 매핑하기 위한 어노테이션
 	public BaseResponse<List<GetUserRes>> getUsers(
-			@RequestParam(required = false) String nickname,
-			@RequestParam(required = false) String email
+		@RequestParam(required = false) String nickname,
+		@RequestParam(required = false) String email
 	) {
 		//  @RequestParam은, 1개의 HTTP Request 파라미터를 받을 수 있는 어노테이션(?뒤의 값). default로 RequestParam은 반드시 값이 존재해야 하도록 설정되어 있지만, (전송 안되면 400 Error 유발)
 		//  지금 예시와 같이 required 설정으로 필수 값에서 제외 시킬 수 있음
@@ -179,17 +188,13 @@ public class UserController {
 	@PatchMapping("/{userIdx}")
 	public BaseResponse<String> modifyUserName(@PathVariable("userIdx") int userIdx, @RequestBody User user) {
 		try {
-			/**
-			 *********** 해당 부분은 7주차 - JWT 수업 후 주석해체 해주세요!  ****************
-			 //jwt에서 idx 추출.
-			 int userIdxByJwt = jwtService.getUserIdx();
-			 //userIdx와 접근한 유저가 같은지 확인
-			 if(userIdx != userIdxByJwt){
-			 return new BaseResponse<>(INVALID_USER_JWT);
-			 }
-			 //같다면 유저네임 변경
-			 **************************************************************************
-			 */
+			//jwt에서 idx 추출.
+			int userIdxByJwt = jwtService.getUserIdx();
+			//userIdx와 접근한 유저가 같은지 확인
+			if (userIdx != userIdxByJwt) {
+				return new BaseResponse<>(INVALID_USER_JWT);
+			}
+
 			PatchUserReq patchUserReq = new PatchUserReq(userIdx, user.getNickname());
 			userService.modifyUserName(patchUserReq);
 
@@ -201,12 +206,18 @@ public class UserController {
 	}
 
 	/**
-	 * 유저정보변경 API
-	 * [PATCH] /users/:userIdx
+	 * 유저삭제 API
+	 * [DELETE] /users/:userIdx
 	 */
 	@DeleteMapping("/{userIdx}")
 	public BaseResponse<String> deleteUserByIdx(@PathVariable("userIdx") int userIdx) {
 		try {
+			int userIdxByJwt = jwtService.getUserIdx();
+			//userIdx와 접근한 유저가 같은지 확인
+			if (userIdx != userIdxByJwt) {
+				return new BaseResponse<>(INVALID_USER_JWT);
+			}
+
 			userService.deleteUser(userIdx);
 			String result = "삭제 완료";
 			return new BaseResponse<>(result);
@@ -215,10 +226,23 @@ public class UserController {
 		}
 	}
 
+	/**
+	 * 유저 세부정보 추가 API
+	 * [PATCH] /:userIdx/detail
+	 */
 	@PatchMapping("/{userIdx}/detail")
-	public BaseResponse<String> updateUserDetails(@PathVariable("userIdx") int userIdx, @RequestBody PatchDetailReq req) {
+	public BaseResponse<String> updateUserDetails(@PathVariable("userIdx") int userIdx,
+		@RequestBody PatchDetailReq req) {
 		try {
 
+			//jwt에서 idx 추출.
+			int userIdxByJwt = jwtService.getUserIdx();
+			//userIdx와 접근한 유저가 같은지 확인
+			if (userIdx != userIdxByJwt) {
+				return new BaseResponse<>(INVALID_USER_JWT);
+			}
+
+			//website가 포함된 경우, website가 URL 형식인지 확인
 			if (req.getWebsite() != null && !isRegexURL(req.getWebsite())) {
 				return new BaseResponse<>(PATCH_DETAIL_INVALID_URL);
 			}
