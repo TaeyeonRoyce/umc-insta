@@ -1,8 +1,15 @@
 package com.example.demo.src.post;
 
+import static com.example.demo.config.BaseResponseStatus.*;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.post.model.GetPostRes;
+import com.example.demo.src.post.model.PatchPostReq;
 import com.example.demo.src.post.model.PostPostReq;
+import com.example.demo.src.user.model.PatchUserReq;
+import com.example.demo.src.user.model.User;
 import com.example.demo.utils.JwtService;
 
 @RestController
@@ -52,5 +63,37 @@ public class PostController {
 		}
 	}
 
+	@ResponseBody
+	@GetMapping("/{userIdx}")
+	public BaseResponse<List<GetPostRes>> getPostsByUser(@PathVariable int userIdx) {
+		try {
+			List<GetPostRes> allPostsById = postService.getAllPostsById(userIdx);
+			return new BaseResponse<>(allPostsById);
+		} catch (BaseException exception) {
+			return new BaseResponse<>((exception.getStatus()));
+		}
+	}
+
+	@ResponseBody
+	@PatchMapping("/{postIdx}")
+	public BaseResponse<String> modifyPostContent(@PathVariable("postIdx") int postIdx, @RequestBody PatchPostReq req) {
+		try {
+			//jwt에서 idx 추출.
+			int userIdxByJwt = jwtService.getUserIdx();
+			int postUserId = postService.getPostUserId(postIdx);
+
+			//수정하려는 post의 userIdx(주인)이 Jwt와 다르면 예외
+			if (postUserId != userIdxByJwt) {
+				return new BaseResponse<>(INVALID_USER_JWT);
+			}
+
+			postService.modifyPostContent(req, postIdx);
+
+			String result = "게시글이 수정되었습니다.";
+			return new BaseResponse<>(result);
+		} catch (BaseException exception) {
+			return new BaseResponse<>((exception.getStatus()));
+		}
+	}
 
 }
