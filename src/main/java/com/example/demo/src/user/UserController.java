@@ -19,6 +19,9 @@ import java.util.List;
 import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.utils.ValidationRegex.*;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController // Rest API 또는 WebAPI를 개발하기 위한 어노테이션. @Controller + @ResponseBody 를 합친것.
 // @Controller      [Presentation Layer에서 Contoller를 명시하기 위해 사용]
 //  [Presentation Layer?] 클라이언트와 최초로 만나는 곳으로 데이터 입출력이 발생하는 곳
@@ -35,7 +38,7 @@ import static com.example.demo.utils.ValidationRegex.*;
 public class UserController {
 	// *********************** 동작에 있어 필요한 요소들을 불러옵니다. *************************
 
-	final Logger logger = LoggerFactory.getLogger(this.getClass()); // Log를 남기기: 일단은 모르고 넘어가셔도 무방합니다.
+	// final Logger logger = LoggerFactory.getLogger(this.getClass()); // Log를 남기기: 일단은 모르고 넘어가셔도 무방합니다.
 
 	@Autowired  // 객체 생성을 스프링에서 자동으로 생성해주는 역할. 주입하려 하는 객체의 타입이 일치하는 객체를 자동으로 주입한다.
 	// IoC(Inversion of Control, 제어의 역전) / DI(Dependency Injection, 의존관계 주입)에 대한 공부하시면, 더 깊이 있게 Spring에 대한 공부를 하실 수 있을 겁니다!(일단은 모르고 넘어가셔도 무방합니다.)
@@ -66,6 +69,13 @@ public class UserController {
 		//  @RequestBody란, 클라이언트가 전송하는 HTTP Request Body(우리는 JSON으로 통신하니, 이 경우 body는 JSON)를 자바 객체로 매핑시켜주는 어노테이션
 		// TODO: email 관련한 짧은 validation 예시입니다. 그 외 더 부가적으로 추가해주세요!
 		// email에 값이 존재하는지, 빈 값으로 요청하지는 않았는지 검사합니다. 빈값으로 요청했다면 에러 메시지를 보냅니다.
+
+		log.debug("User sign-up name: {}", postUserReq.getName());
+		log.debug("User sign-up email: {}", postUserReq.getEmail());
+		log.debug("User sign-up password: {}", postUserReq.getPassword());
+		log.debug("User sign-up nickname: {}", postUserReq.getNickname());
+
+
 		if (postUserReq.getEmail() == null) {
 			return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
 		} else if (postUserReq.getName() == null) {
@@ -94,6 +104,10 @@ public class UserController {
 	@ResponseBody
 	@PostMapping("/log-in")
 	public BaseResponse<PostLoginRes> logIn(@RequestBody PostLoginReq postLoginReq) {
+
+		log.debug("PostLogin Email : {}", postLoginReq.getEmail());
+		log.debug("PostLogin password : {}", postLoginReq.getPassword());
+
 		try {
 			// TODO: 로그인 값들에 대한 형식적인 validatin 처리해주셔야합니다!
 			// TODO: 유저의 status ex) 비활성화된 유저, 탈퇴한 유저 등을 관리해주고 있다면 해당 부분에 대한 validation 처리도 해주셔야합니다.
@@ -136,28 +150,26 @@ public class UserController {
 		//  defaultValue를 통해, 기본값(파라미터가 없는 경우, 해당 파라미터의 기본값 설정)을 지정할 수 있음
 		try {
 			if (nickname == null && email == null) { // query string인 nickname과 email이 없을 경우, 그냥 전체 유저정보를 불러온다.
+				log.debug("Get All Users");
 				List<GetUserRes> getUsersRes = userProvider.getUsers();
 				return new BaseResponse<>(getUsersRes);
 			}
 
 			// query string인 nickname이 있을 경우, 조건을 만족하는 유저정보들을 불러온다.
 			if (email == null) {
+				log.debug("Get User By Nickname : {}", nickname);
 				List<GetUserRes> getUsersRes = userProvider.getUsersByNickname(nickname);
 				return new BaseResponse<>(getUsersRes);
 			}
 
 			// query string인 email이 있을 경우, 조건을 만족하는 유저정보들을 불러온다.
+			log.debug("Get User By Email : {}", email);
 			List<GetUserRes> getUsersRes = userProvider.getUserByEmail(email);
 			return new BaseResponse<>(getUsersRes);
 		} catch (BaseException exception) {
 			return new BaseResponse<>((exception.getStatus()));
 		}
 	}
-
-	/**
-
-
-
 
 	 /**
 	 * 회원 1명 조회 API
@@ -172,6 +184,7 @@ public class UserController {
 		//  .(dot)이 포함된 경우, .을 포함한 그 뒤가 잘려서 들어감
 		// Get Users
 		try {
+			log.debug("Get User By UserId : {}", userIdx);
 			GetUserRes getUserRes = userProvider.getUser(userIdx);
 			return new BaseResponse<>(getUserRes);
 		} catch (BaseException exception) {
@@ -194,6 +207,7 @@ public class UserController {
 			if (userIdx != userIdxByJwt) {
 				return new BaseResponse<>(INVALID_USER_JWT);
 			}
+
 
 			PatchUserReq patchUserReq = new PatchUserReq(userIdx, user.getNickname());
 			userService.modifyUserName(patchUserReq);
@@ -218,6 +232,7 @@ public class UserController {
 				return new BaseResponse<>(INVALID_USER_JWT);
 			}
 
+			log.debug("Delete User, ID : {}", userIdx);
 			userService.deleteUser(userIdx);
 			String result = "삭제 완료";
 			return new BaseResponse<>(result);

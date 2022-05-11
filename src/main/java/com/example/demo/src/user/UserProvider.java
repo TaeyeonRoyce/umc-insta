@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import static com.example.demo.config.BaseResponseStatus.*;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 //Provider : Read의 비즈니스 로직 처리
 @Service    // [Business Layer에서 Service를 명시하기 위해서 사용] 비즈니스 로직이나 respository layer 호출하는 함수에 사용된다.
             // [Business Layer]는 컨트롤러와 데이터 베이스를 연결
@@ -29,7 +32,7 @@ public class UserProvider {
     private final JwtService jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
 
 
-    final Logger logger = LoggerFactory.getLogger(this.getClass());
+    // final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired //readme 참고
     public UserProvider(UserDao userDao, JwtService jwtService) {
@@ -65,6 +68,7 @@ public class UserProvider {
         try {
             return userDao.checkEmail(email);
         } catch (Exception exception) {
+            log.debug(exception.getMessage());
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -76,6 +80,7 @@ public class UserProvider {
             List<GetUserRes> getUserRes = userDao.getUsers();
             return getUserRes;
         } catch (Exception exception) {
+            log.debug(exception.getMessage());
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -89,6 +94,7 @@ public class UserProvider {
             }
             return getUsersRes;
         } catch (Exception exception) {
+            log.debug(exception.getMessage());
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -101,6 +107,7 @@ public class UserProvider {
             return getUserRes;
         } catch (Exception exception) {
             System.out.println(exception);
+            log.debug(exception.getMessage());
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -114,6 +121,7 @@ public class UserProvider {
             }
             return getUsersRes;
         } catch (Exception exception) {
+            log.debug(exception.getMessage());
             throw new BaseException(DATABASE_ERROR);
         }
     }
