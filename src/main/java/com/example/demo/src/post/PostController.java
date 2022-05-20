@@ -19,10 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.post.model.GetPostRes;
+import com.example.demo.src.post.model.GetPostResult;
 import com.example.demo.src.post.model.PatchPostReq;
 import com.example.demo.src.post.model.PostPostReq;
-import com.example.demo.src.user.model.PatchUserReq;
-import com.example.demo.src.user.model.User;
 import com.example.demo.utils.JwtService;
 
 @RestController
@@ -65,9 +64,9 @@ public class PostController {
 
 	@ResponseBody
 	@GetMapping("/{userIdx}")
-	public BaseResponse<List<GetPostRes>> getPostsByUser(@PathVariable int userIdx) {
+	public BaseResponse<List<GetPostResult>> getPostsByUser(@PathVariable int userIdx) {
 		try {
-			List<GetPostRes> allPostsById = postService.getAllPostsById(userIdx);
+			List<GetPostResult> allPostsById = postService.getAllPostsById(userIdx);
 			return new BaseResponse<>(allPostsById);
 		} catch (BaseException exception) {
 			return new BaseResponse<>((exception.getStatus()));

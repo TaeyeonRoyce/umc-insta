@@ -10,9 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.src.post.model.GetPostRes;
 import com.example.demo.src.post.model.PatchPostReq;
+import com.example.demo.src.post.model.PostImgUrlRes;
 import com.example.demo.src.post.model.PostPostReq;
-import com.example.demo.src.user.model.GetUserRes;
-import com.example.demo.src.user.model.PatchUserReq;
 
 @Repository
 public class PostDao {
@@ -40,18 +39,26 @@ public class PostDao {
 		this.jdbcTemplate.update(createPostImgQuery, createPostImgParams);
 	}
 
-	// User 테이블에 존재하는 전체 유저들의 정보 조회
 	public List<GetPostRes> getPostById(int userIdx) {
-		String getPostsQuery = "select * from post where user_idx = ?"; //User 테이블에 존재하는 모든 회원들의 정보를 조회하는 쿼리
+		String getPostsQuery = "select * from post where user_idx = ?";
 		return this.jdbcTemplate.query(getPostsQuery,
 			(rs, rowNum) -> new GetPostRes(
 				rs.getInt("user_idx"),
+				rs.getInt("post_idx"),
 				rs.getString("content")// RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
 		), userIdx); // 복수개의 회원정보들을 얻기 위해 jdbcTemplate 함수(Query, 객체 매핑 정보)의 결과 반환(동적쿼리가 아니므로 Parmas부분이 없음)
 	}
 
+	public List<PostImgUrlRes> getPostImgUrlsByPostIdx(int postIdx) {
+		String getPostImgUrlQuery = "select * from post_img_url where post_idx = ?";
+		return this.jdbcTemplate.query(getPostImgUrlQuery,
+			(rs, rowNum) -> new PostImgUrlRes(
+				rs.getString("img_url")// RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+			), postIdx);
+	}
+
 	public int getPostUserId(int userIdx) {
-		String getPostUserIdQuery = "select * from post where post_idx = ?"; //User 테이블에 존재하는 모든 회원들의 정보를 조회하는 쿼리
+		String getPostUserIdQuery = "select * from post where post_idx = ?";
 		Object[] findIdx = new Object[] {userIdx};
 		return this.jdbcTemplate.update(getPostUserIdQuery, findIdx); //쿼리 요청(삭제했으면 1, 실패했으면 0)
 	}

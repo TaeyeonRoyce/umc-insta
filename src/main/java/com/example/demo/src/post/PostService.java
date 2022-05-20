@@ -2,6 +2,7 @@ package com.example.demo.src.post;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Service;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.post.model.GetPostRes;
+import com.example.demo.src.post.model.GetPostResult;
 import com.example.demo.src.post.model.PatchPostReq;
+import com.example.demo.src.post.model.PostImgUrlRes;
 import com.example.demo.src.post.model.PostPostReq;
 import com.example.demo.utils.JwtService;
 
@@ -50,9 +53,16 @@ public class PostService {
 
 	}
 
-	public List<GetPostRes> getAllPostsById(int userIdx) throws BaseException {
+	public List<GetPostResult> getAllPostsById(int userIdx) throws BaseException {
 		try {
-			return postDao.getPostById(userIdx);
+			List<GetPostRes> postById = postDao.getPostById(userIdx);
+			List<GetPostResult> postResults = new ArrayList<>();
+			for (GetPostRes getPostRes : postById) {
+				List<PostImgUrlRes> postImgUrlsByPostIdx = postDao.getPostImgUrlsByPostIdx(getPostRes.getPostIdx());
+				postResults.add(getPostRes.toGetPostResult(postImgUrlsByPostIdx));
+			}
+
+			return postResults;
 		} catch (Exception exception) {
 			System.out.println(exception);
 			throw new BaseException(DATABASE_ERROR);
