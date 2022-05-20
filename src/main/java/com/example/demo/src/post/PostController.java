@@ -95,4 +95,18 @@ public class PostController {
 		}
 	}
 
+	@ResponseBody
+	@PatchMapping("/{postIdx}/like")
+	public BaseResponse<String> toggleLikePost(@PathVariable("postIdx") int postIdx) {
+		try {
+			//jwt에서 idx 추출.
+			int userIdxByJwt = jwtService.getUserIdx();
+
+			String result = postService.togglePost(postIdx, userIdxByJwt);
+			return new BaseResponse<>(result);
+		} catch (BaseException exception) {
+			return new BaseResponse<>((exception.getStatus()));
+		}
+	}
+
 }

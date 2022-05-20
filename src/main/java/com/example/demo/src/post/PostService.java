@@ -17,6 +17,7 @@ import com.example.demo.src.post.model.GetPostRes;
 import com.example.demo.src.post.model.GetPostResult;
 import com.example.demo.src.post.model.PatchPostReq;
 import com.example.demo.src.post.model.PostImgUrlRes;
+import com.example.demo.src.post.model.PostLikeRes;
 import com.example.demo.src.post.model.PostPostReq;
 import com.example.demo.utils.JwtService;
 
@@ -89,6 +90,22 @@ public class PostService {
 				throw new BaseException(MODIFY_FAIL_USERNAME);
 			}
 		} catch (Exception exception) { // DB에 이상이 있는 경우 에러 메시지를 보냅니다.
+			throw new BaseException(DATABASE_ERROR);
+		}
+	}
+
+	public String togglePost(int postIdx, int userIdx) throws BaseException {
+		try {
+			PostLikeRes postLike = postDao.findPostLike(postIdx, userIdx);
+			if (postLike == null) {
+				postDao.likePost(postIdx, userIdx);
+				return "좋아요 반영";
+			}
+
+			postDao.unlikePost(postIdx, userIdx);
+			return "좋아요 해제";
+		} catch (Exception exception) { // DB에 이상이 있는 경우 에러 메시지를 보냅니다.
+			System.out.println(exception);
 			throw new BaseException(DATABASE_ERROR);
 		}
 	}

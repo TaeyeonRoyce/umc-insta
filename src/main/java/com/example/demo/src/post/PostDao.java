@@ -5,12 +5,14 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.src.post.model.GetPostRes;
 import com.example.demo.src.post.model.PatchPostReq;
 import com.example.demo.src.post.model.PostImgUrlRes;
+import com.example.demo.src.post.model.PostLikeRes;
 import com.example.demo.src.post.model.PostPostReq;
 
 @Repository
@@ -63,12 +65,37 @@ public class PostDao {
 		return this.jdbcTemplate.update(getPostUserIdQuery, findIdx); //쿼리 요청(삭제했으면 1, 실패했으면 0)
 	}
 
-	// 회원정보 변경
 	public int updatePostContent(PatchPostReq req, int postIdx) {
-		String modifyPostContentQuery = "update post set content = ? where post_idx = ? "; // 해당 userIdx를 만족하는 User를 해당 nickname으로 변경한다.
-		Object[] modifyPostContentParams = new Object[]{req.getContent(), postIdx}; // 주입될 값들(nickname, userIdx) 순
+		String modifyPostContentQuery = "update post set content = ? where post_idx = ? ";
+		Object[] modifyPostContentParams = new Object[]{req.getContent(), postIdx};
 
 		return this.jdbcTemplate.update(modifyPostContentQuery, modifyPostContentParams); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
+	}
+
+	public PostLikeRes findPostLike(int postIdx, int userIdx) {
+		try {
+			String findPostLikeQuery = "select post_idx, user_idx from post_like where post_idx = ? and user_idx = ?";
+			return this.jdbcTemplate.queryForObject(findPostLikeQuery,
+				(rs, rowNum) -> new PostLikeRes(
+					rs.getInt("post_idx"),
+					rs.getInt("user_idx")// RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+				), postIdx, userIdx);
+		} catch (IncorrectResultSizeDataAccessException e) {
+			//Query 결과가 null인 경우
+			return null;
+		}
+	}
+
+	public void likePost(int postIdx, int userIdx) {
+		String likePostQuery = "insert into post_like (post_idx, user_idx) VALUES (?, ?)";
+		Object[] postLikeParams = new Object[]{postIdx, userIdx}; // 동적 쿼리의 ?부분에 주입될 값
+		this.jdbcTemplate.update(likePostQuery, postLikeParams);
+	}
+
+	public void unlikePost(int postIdx, int userIdx) {
+		String unlikePostQuery = "delete from post_like where post_idx = ? and user_idx = ?";
+		Object[] postUnlikeParams = new Object[]{postIdx, userIdx}; // 동적 쿼리의 ?부분에 주입될 값
+		this.jdbcTemplate.update(unlikePostQuery, postUnlikeParams);
 	}
 
 
